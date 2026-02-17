@@ -4,27 +4,36 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
     public function index()
     {
+        // if(!Gate::allows("clientAccess", Auth::user())){
+        //     echo "Access denied!";
+        //     exit;
+        // }
+
         $products = Product::all();
        return view('public.home', compact('products'));
     }
 
     public function category($category)
     {
+        $allProducts = Product::all();
         $products = Product::where('category', $category)->get();
+
         switch ($category) {
             case 'plants':
-                return view('public.plants', compact('products'));
+                return view('public.plants', compact('products', 'allProducts'));
                 break;
             case 'grains':
-                return view('public.grains', compact('products'));
+                return view('public.grains', compact('products', 'allProducts'));
                 break;
             case 'outils':
-                return view('public.outils', compact('products'));
+                return view('public.outils', compact('products', 'allProducts'));
                 break;
         }
         
@@ -32,44 +41,63 @@ class ProductController extends Controller
 
     public function admin()
     {
+        if(!Gate::allows("adminAccess", Auth::user())){
+            echo "Access denied!";
+            exit;
+        }
+
         $products = Product::all();
        return view('admin.dashboard', compact('products'));
     }
 
     public function addProduct(Request $request)
     {
-        $productData = $request->validate([
-            'name' => 'required|string',
-            'description' => 'nullable',
-            'price' => 'required|numeric',
-            'category' => 'required|string',
-            'stock' => 'required|integer'
-        ]);
-
-        Product::create($productData);
-
-        return redirect('/admin');
+        if(Gate::allows("adminAccess", Auth::user())){
+            
+            $productData = $request->validate([
+                'name' => 'required|string',
+                'description' => 'nullable',
+                'price' => 'required|numeric',
+                'category' => 'required|string',
+                'stock' => 'required|integer'
+            ]);
+    
+            Product::create($productData);
+    
+            return redirect('/admin');
+        }
+        else
+            return redirect('/');
+        
     }
 
-    public function removeProduct($id)
+    public function removeProduct(Product $product)
     {
-        Product::find($id)->delete();
-        return redirect('/admin');
+        if(Gate::allows("adminAccess", Auth::user())){
+            $product->delete();
+            return redirect('/admin');
+        }
+        else
+            return redirect('/');
     }
 
     public function editProduct(Request $request)
     {
-        $productData = $request->validate([
+        if(Gate::allows("adminAccess", Auth::user())){
+            $productData = $request->validate([
             'name' => 'required|string',
             'description' => 'nullable',
             'price' => 'required|numeric',
             'category' => 'required|string',
             'stock' => 'required|integer'
-        ]);
+            ]);
 
-        Product::find($request->id)->update($productData);
+            Product::findOrFail($request->id)->update($productData);// find or fail to prevent 500 errors and instead giving the user 404 error to prevent showing our code structure to the users
 
-        return redirect('/admin');
+            return redirect('/admin');
+        }
+        else
+            return redirect('/');
     }
 
     public function productSearch(Request $request, $user)
@@ -86,4 +114,5 @@ class ProductController extends Controller
                 break;
         }
     }
+
 }

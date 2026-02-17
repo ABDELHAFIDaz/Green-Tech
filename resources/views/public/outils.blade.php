@@ -66,13 +66,18 @@
                     <span class="text-xl">🔧</span>
                     <span class="font-medium">Tools</span>
                 </a>
+
+                <a href="{{ route('favoris') }}" class="flex items-center gap-3 px-4 py-3 text-white/80 rounded-xl mb-2 hover:bg-white/10 transition-all duration-300 hover:translate-x-1">
+                    <span class="text-xl">❤️</span>
+                    <span class="font-medium">Favoris</span>
+                </a>
             </div>
         </nav>
 
         <div class="absolute bottom-0 left-0 right-0 p-5 bg-black/20 border-t border-white/10">
-            <a href="{{route('admin')}}" class="flex items-center gap-3 px-4 py-3 bg-white/10 hover:bg-white/15 backdrop-blur-lg rounded-xl text-white transition-all duration-300">
-                <span class="text-lg">⚙️</span>
-                <span class="font-medium text-sm">Admin Panel</span>
+            <a href="{{ route('logout') }}" class="flex items-center gap-3 px-4 py-3 bg-terracotta-500/20 hover:bg-terracotta-500/30 backdrop-blur-lg rounded-xl text-white transition-all duration-300">
+                <span class="text-lg">🚪</span>
+                <span class="font-medium text-sm">Logout</span>
             </a>
         </div>
     </aside>
@@ -90,7 +95,7 @@
                     Professional quality tools to facilitate your daily agricultural work.
                 </p>
                 <div class="inline-flex items-center gap-3 bg-white rounded-2xl shadow-sm px-6 py-4">
-                    <span class="text-3xl font-serif font-bold text-earth-400">{{ $products->count() }}</span>
+                    <span class="text-3xl font-serif font-bold text-earth-400">{{ $products->count() }} / {{ $allProducts->count() }}</span>
                     <span class="text-sm text-gray-500 font-medium">Products</span>
                 </div>
             </div>
@@ -141,7 +146,6 @@
                                 </div>
                                 
                                 <div class="flex gap-2">
-                                    <button class="w-10 h-10 flex items-center justify-center bg-earth-50 hover:bg-earth-400 hover:text-white rounded-lg transition-colors text-lg">🛒</button>
                                     <button class="w-10 h-10 flex items-center justify-center bg-earth-50 hover:bg-terracotta-500 hover:text-white rounded-lg transition-colors text-lg">❤️</button>
                                 </div>
                             </div>

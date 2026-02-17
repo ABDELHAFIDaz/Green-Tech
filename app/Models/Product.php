@@ -14,4 +14,9 @@ class Product extends Model
         'image',
         'stock'
     ];
+
+    public function favoris()
+    {
+        return $this->hasMany(Favoris::class);
+    }
 }
